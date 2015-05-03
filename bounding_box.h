@@ -16,10 +16,12 @@ public:
 	bool empty() const;
 	Axis major_axis() const;
 
-	void include_points(const float* pt_array, uint cnt);
+	void include_points(const float3* pt_array, uint cnt, uint step = sizeof(float3));
 
 	float3 to_unified_space(const float3& pt) const;
+	void to_unified_space(float3* pt_array, uint cnt, uint step) const;
 	float3 from_unified_space(const float3& pt) const;
+	void from_unified_space(float3* pt_array, uint cnt, uint step) const;
 public:
 	float3 min;
 	float3 max;

@@ -79,6 +79,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="bounding_box.h" />
+    <ClInclude Include="bound_sphere.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="float3.h" />
     <ClInclude Include="point3_accel.h" />
@@ -87,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bounding_box.cpp" />
+    <ClCompile Include="bound_sphere.cpp" />
     <ClCompile Include="float3.cpp" />
     <ClCompile Include="MeshFixingTools.cpp" />
     <ClCompile Include="point3_accel.cpp" />

@@ -8,7 +8,9 @@ enum Axis
 	Mask = 0x0003
 };
 
+
 typedef unsigned int uint;
+typedef unsigned char byte;
 
 #ifdef WANT_DOUBLE_PRECISION
 	typedef double real;

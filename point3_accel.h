@@ -4,6 +4,7 @@
 #include "bounding_box.h"
 #include <vector>
 #include <memory>
+#include <assert.h>
 
 class point3_accel
 {
@@ -11,7 +12,7 @@ public:
 	point3_accel();
 	virtual ~point3_accel();
 
-	void initialize(const float3* pt_array);
+	void initialize(const float3* pt_array, uint cnt);
 
 	void search(const float3& pos, float radius, std::vector<uint>& out_result) const;
 
@@ -21,13 +22,11 @@ public:
 protected:
 	struct kd_node
 	{
-		uint flag;
-
 		struct limb
 		{
 			real split_position;
-			uint left_child_idx;
-			uint right_child_idx;
+			uint h_left_child;
+			uint h_right_child;
 
 			uint point_idx_start;
 			uint point_count;
@@ -39,29 +38,42 @@ protected:
 			uint point_count;
 			bounding_box bbox;
 		};
-
-		union
-		{
-			limb as_limb;
-			leaf as_leaf;
-		} data;
 		
+		uint flag;
+		
+
+		limb& as_limb() 
+		{ 
+			assert((flag & is_leaf_mask) == 0);
+			return *(limb*)(this + 1); 
+		}
+
+		leaf& as_leaf() 
+		{ 
+			assert(flag & is_leaf_mask);
+			return *(leaf*)(this + 1); 
+		}
+
 	};
 
-	struct kd_leaf
-	{
-		uint point_idx_start;
-		uint point_count;
-		bounding_box bbox;
-	};
+	const static uint is_leaf_mask = 0x0004;
+	const static uint limb_node_size = sizeof(kd_node) + sizeof(kd_node::limb);
+	const static uint leaf_node_size = sizeof(kd_node) + sizeof(kd_node::leaf);
+	std::vector<byte> mNodeData;
+	typedef uint node_handle;
 
-
-	kd_node split_node(uint start_idx, uint count);
+	node_handle split_node(uint start_idx, uint count, uint depth = 0);
+	kd_node* get_kd_node(node_handle handle);
 
 private:
-	std::vector<float3>			mpUnifiedPoints;
+	struct indexed_point3
+	{
+		float3 point;
+		uint index;
+	};
+	std::vector<indexed_point3>	mpUnifiedPoints;
 	bounding_box				mOrigBBox;
-	std::unique_ptr<kd_node>	mRootNode;
+	kd_node						mRootNode;
 
 	uint						mLeafThreshold;
 	uint						mDepthThreshold;
