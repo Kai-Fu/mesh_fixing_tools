@@ -14,8 +14,6 @@ public:
 
 	void initialize(const float3* pt_array, uint cnt);
 
-	void search(const float3& pos, float radius, std::vector<uint>& out_result) const;
-
 	void search(const float3& pos, std::vector<uint>& out_result) const;
 
 
@@ -48,10 +46,22 @@ protected:
 			return *(limb*)(this + 1); 
 		}
 
+		const limb& as_limb() const
+		{
+			assert((flag & is_leaf_mask) == 0);
+			return *(limb*)(this + 1);
+		}
+
 		leaf& as_leaf() 
 		{ 
 			assert(flag & is_leaf_mask);
 			return *(leaf*)(this + 1); 
+		}
+
+		const leaf& as_leaf() const
+		{
+			assert(flag & is_leaf_mask);
+			return *(leaf*)(this + 1);
 		}
 
 	};
@@ -64,6 +74,8 @@ protected:
 
 	node_handle split_node(uint start_idx, uint count, uint depth = 0);
 	kd_node* get_kd_node(node_handle handle);
+	const kd_node* get_kd_node(node_handle handle) const;
+	void search_node(const float3& unified_pos, node_handle node, std::vector<uint>& out_result) const;
 
 private:
 	struct indexed_point3

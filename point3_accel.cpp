@@ -31,6 +31,11 @@ void point3_accel::initialize(const float3 * pt_array, uint cnt)
 	mRootNode = *get_kd_node(h_root);
 }
 
+void point3_accel::search(const float3& pos, std::vector<uint>& out_result) const
+{
+
+}
+
 point3_accel::node_handle point3_accel::split_node(uint start_idx, uint count, uint depth)
 {
 	class PartitionFunctor {
@@ -84,4 +89,31 @@ point3_accel::kd_node * point3_accel::get_kd_node(node_handle handle)
 {
 	kd_node* result = (kd_node*)&mNodeData[handle];
 	return result;
+}
+
+const point3_accel::kd_node * point3_accel::get_kd_node(node_handle handle) const
+{
+	const kd_node* result = (const kd_node*)&mNodeData[handle];
+	return result;
+}
+
+void point3_accel::search_node(const float3& unified_pos, node_handle node, std::vector<uint>& out_result) const
+{
+	const kd_node* pNode = get_kd_node(node);
+	if (pNode->flag & is_leaf_mask) {
+		const kd_node::leaf& l = pNode->as_leaf();
+		if (l.bbox.contains(unified_pos)) {
+			for (uint i = l.point_idx_start; i < l.point_idx_start + l.point_count; ++i) {
+				if ((mpUnifiedPoints[i].point - unified_pos).length_square() <= (epsilon_real*epsilon_real))
+					out_result.push_back(mpUnifiedPoints[i].index);
+			}
+		}
+	}
+	else {
+		const kd_node::limb& l = pNode->as_limb();
+		if (unified_pos[pNode->flag & Axis::Mask] <= l.split_position)
+			search_node(unified_pos, l.h_left_child, out_result);
+		else 
+			search_node(unified_pos, l.h_right_child, out_result);
+	}
 }

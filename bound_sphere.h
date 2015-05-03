@@ -7,7 +7,6 @@ class bound_sphere
 public:
 	bound_sphere();
 	bound_sphere(const float3& c, const float3& r);
-	~bound_sphere();
 
 	bool contains(const float3& pt) const;
 	bool contains(const bounding_box& bb) const;

@@ -85,6 +85,7 @@
     <ClInclude Include="point3_accel.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="triangle_topo.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="bounding_box.cpp" />
@@ -93,6 +94,7 @@
     <ClCompile Include="MeshFixingTools.cpp" />
     <ClCompile Include="point3_accel.cpp" />
     <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="triangle_topo.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

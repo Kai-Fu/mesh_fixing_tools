@@ -15,9 +15,11 @@ typedef unsigned char byte;
 #ifdef WANT_DOUBLE_PRECISION
 	typedef double real;
 	#define math_sqrt sqrt
+	#define epsilon_real 1.0e-15
 #else
 	typedef float real;
 	#define math_sqrt sqrtf
+	#define epsilon_real 1.0e-6
 #endif
 
 template <typename ValueType>
